@@ -1,97 +1,79 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { GlobalStyles } from 'utils/GlobalStyle';
-// import movies from '../data/movies.json';
 import { moviesMapper } from '../utils/mapper';
 import { MoviesGallery } from './MoviesGallery/MoviesGallery';
-import Modal from './Modal/Modal';
+import { Modal } from './Modal/Modal';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
 import { Notification } from './Notification/Notitfication';
 import { getMovies } from '../servises/moviesApi';
 
-export default class App extends Component {
-  state = {
-    isShown: false,
-    movies: [],
-    currentImage: null,
-    page: 1,
-    isLoading: false,
-    error: null,
-  };
+export const App = () => {
+  const [isShown, setIsShown] = useState(false);
+  const [movies, setMovies] = useState([]);
+  const [currentImage, setCurrentImage] = useState(null);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  componentDidUpdate(_, prevState) {
-    const { isShown, page } = this.state;
-    if ((isShown && prevState.isShown !== isShown) || page !== prevState.page) {
-      this.fetchMovies();
+  useEffect(() => {
+    if (isShown) {
+      setIsLoading(true);
+      getMovies(page)
+        .then(({ data: { results } }) => {
+          setMovies(prevMovies => [...prevMovies, ...moviesMapper(results)]);
+        })
+        .catch(error => {
+          setError(error.message);
+        })
+        .finally(() => setIsLoading(false));
     }
-  }
+  }, [isShown, page]);
 
-  fetchMovies = () => {
-    this.setState({ isLoading: true });
-    getMovies(this.state.page)
-      .then(({ data: { results } }) => {
-        this.setState(prevState => ({
-          movies: [...prevState.movies, ...moviesMapper(results)],
-        }));
-      })
-      .catch(error => {
-        console.log(error);
-        this.setState({ error: error.message });
-      })
-      .finally(() => this.setState({ isLoading: false }));
+  const deleteMovie = movieId => {
+    setMovies(prevMovies => prevMovies.filter(({ id }) => id !== movieId));
   };
 
-  deleteMovie = movieId => {
-    this.setState(prevState => ({
-      movies: prevState.movies.filter(({ id }) => id !== movieId),
-    }));
+  const openModal = data => {
+    setCurrentImage(data);
   };
 
-  openModal = data => {
-    this.setState({ currentImage: data });
+  const closeModal = () => {
+    setCurrentImage(null);
   };
 
-  closeModal = () => {
-    this.setState({ currentImage: null });
+  const showFilms = () => {
+    setIsShown(prevIsShown => !prevIsShown);
   };
 
-  showFilms = () => {
-    this.setState(prevState => ({
-      isShown: !prevState.isShown,
-    }));
+  const loadMore = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
-
-  render() {
-    const { movies, currentImage, isShown, isLoading, error } = this.state;
-    return (
-      <>
-        <Button
-          text={isShown ? 'Hide movies' : 'Show movies'}
-          clickHandler={this.showFilms}
-        />
-        {isShown && (
-          <>
-            <MoviesGallery
-              movies={movies}
-              deleteMovie={this.deleteMovie}
-              openModal={this.openModal}
-            />
-            {!isLoading && !error && (
-              <Button text="Load more" clickHandler={this.loadMore} />
-            )}
-          </>
-        )}
-        {isLoading && <Loader />}
-        {error && <Notification text={error} />}
-        {currentImage && (
-          <Modal currentImage={currentImage} closeModal={this.closeModal} />
-        )}
-        <GlobalStyles />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Button
+        text={isShown ? 'Hide movies' : 'Show movies'}
+        clickHandler={showFilms}
+      />
+      {isShown && (
+        <>
+          <MoviesGallery
+            movies={movies}
+            deleteMovie={deleteMovie}
+            openModal={openModal}
+          />
+          {!isLoading && !error && (
+            <Button text="Load more" clickHandler={loadMore} />
+          )}
+        </>
+      )}
+      {isLoading && <Loader />}
+      {error && <Notification text={error} />}
+      {currentImage && (
+        <Modal currentImage={currentImage} closeModal={closeModal} />
+      )}
+      <GlobalStyles />
+    </>
+  );
+};
