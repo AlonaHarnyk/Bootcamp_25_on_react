@@ -10,6 +10,9 @@ import { Navigation } from './Navigation/Navigation';
 import { getMovies } from '../servises/moviesApi';
 import { AuthContext } from '../authContext';
 
+import { TestForm } from './TestForm/TestForm';
+import { TestSpan } from './TestSpan/TestSpan';
+
 export const App = () => {
   const [isShown, setIsShown] = useState(false);
   const [movies, setMovies] = useState([]);
@@ -85,6 +88,8 @@ export const App = () => {
         </>
       )}
       <GlobalStyles />
+      {/* <TestForm /> */}
+      <TestSpan/>
     </>
   );
 };

@@ -7,11 +7,11 @@ import { ThemeProvider } from 'styled-components';
 import { AuthContextProvider } from './authContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
+  <React.StrictMode>
   <ThemeProvider theme={theme}>
     <AuthContextProvider>
       <App />
     </AuthContextProvider>
   </ThemeProvider>
-  // </React.StrictMode>
+  </React.StrictMode>
 );

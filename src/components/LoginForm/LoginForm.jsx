@@ -22,7 +22,7 @@ export const LoginForm = () => {
     <form onSubmit={handleSubmit}>
       <input
         type="password"
-        // value={password}
+        value={password}
         placeholder="Your password"
         onChange={handleChange}
       />
