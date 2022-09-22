@@ -1,16 +1,16 @@
-import { useContext } from 'react';
-import { AuthContext } from '../../authContext';
-import { LoginForm } from '../LoginForm/LoginForm';
+import { Link } from './Navigation.styled';
 
 export const Navigation = () => {
-  const { isAuth, logout } = useContext(AuthContext);
-
-  return isAuth ? (
-    <>
-      <p>You're welcome!</p>
-      <button onClick={logout}>Logout</button>
-    </>
-  ) : (
-    <LoginForm />
+  return (
+    <nav>
+      <ul>
+        <li>
+          <Link to="/" end>Home</Link>
+        </li>
+        <li>
+          <Link to="events">Events</Link>
+        </li>
+      </ul>
+    </nav>
   );
 };
