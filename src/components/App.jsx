@@ -1,10 +1,7 @@
-import { HomePage } from 'pages/HomePage';
-import { EventsPage } from 'pages/EventsPage';
-import { EventsSubPage } from 'pages/EventsSubPage';
-import { EventDetailsPage } from 'pages/EventDetailsPage';
-import { NotFoundPage } from 'pages/NotFoundPage';
 import { Layout } from './Layout';
-import { Routes, Route } from 'react-router-dom';
+import { AddContactPage } from 'pages/AddContactPage';
+import { HomePage } from 'pages/HomePage';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 export const App = () => {
   return (
@@ -12,12 +9,9 @@ export const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="events" element={<EventsPage />}>
-            <Route path=":eventId" element={<EventsSubPage />} />
-          </Route>
+          <Route path="add" element={<AddContactPage />} />
         </Route>
-        <Route path="events/:eventId/details" element={<EventDetailsPage />} />
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
