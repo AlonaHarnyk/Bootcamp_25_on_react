@@ -1,12 +1,16 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import { getStatus } from '../servises/statusApi';
-import { addUser } from 'redux/users/users-actions';
+// import { addUser } from 'redux/users/users-actions';
+import { addUser } from 'redux/users/usersSlice';
 import { useDispatch } from 'react-redux';
+// import { usersSlice } from 'redux/users/usersSlice';
+import { useLocalStorage } from '../hooks/useLocaleStorage';
 
 export const AddContactPage = () => {
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
+  // console.log(usersSlice);
+  const [name, setName] = useLocalStorage('name', '');
+  const [age, setAge] = useLocalStorage('age', '');
 
   const dispatch = useDispatch();
 

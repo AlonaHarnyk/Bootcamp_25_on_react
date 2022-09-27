@@ -1,10 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUser, updateUser } from 'redux/users/users-actions';
+// import { deleteUser, updateUser } from 'redux/users/users-actions';
+import { deleteUser, updateUser } from 'redux/users/usersSlice';
 import { getUsers } from '../redux/users/users-selectors';
 import Avatar from 'react-avatar';
 
 export const HomePage = () => {
   const users = useSelector(getUsers);
+
   const dispatch = useDispatch();
 
   return (
