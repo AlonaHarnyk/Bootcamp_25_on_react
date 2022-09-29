@@ -1,33 +1,30 @@
-import PropTypes from 'prop-types';
 import { User } from '../User/User';
+import { getUsers } from '../../redux/users/usersSelectors.js'
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteUser } from 'redux/users/usersOperations';
 
-export const UsersList = ({ users, deleteUser, changeStatus, showUpdateForm, userToUpdate, updateUser }) => {
+export const UsersList = () => {
+  const users = useSelector(getUsers)
+  const dispatch = useDispatch()
+
+console.log(users)
+  
+  const handleDelete = id => {
+dispatch(deleteUser(id))
+  }
+
+
   return (
     <ul>
       {users.map(user => (
         <li key={user.id}>
-          <User user={user} deleteUser={deleteUser} changeStatus={changeStatus} showUpdateForm={showUpdateForm} userToUpdate={ userToUpdate} updateUser={updateUser} />
+          <User user={user} removeUser={handleDelete} />
         </li>
       ))}
     </ul>
   );
 };
 
-UsersList.propTypes = {
-  users: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
-      hasJob: PropTypes.bool.isRequired
-    }).isRequired
-  ).isRequired,
-  deleteUser: PropTypes.func.isRequired,
-  changeStatus: PropTypes.func.isRequired,
-  showUpdateForm: PropTypes.func.isRequired,
-  userToUpdate: PropTypes.any.isRequired,
-  updateUser: PropTypes.func.isRequired
-};
 
 // export const UsersList = ({ users }) => {
 //   return (

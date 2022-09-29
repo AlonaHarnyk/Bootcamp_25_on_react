@@ -1,61 +1,56 @@
-import { Component } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { addUser } from 'redux/users/usersOperations';
+import { useDispatch, useSelector } from 'react-redux';
 
-const INITIAL_STATE = {
-  name: '',
-  email: '',
-};
+export const AddUserForm = ({closeForm}) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const dispatch = useDispatch();
 
-export default class AddUserForm extends Component {
-  static propTypes = {
-    addUser: PropTypes.func.isRequired,
+  const handleChange = ({ target: { name, value } }) => {
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      default:
+        break;
+    }
   };
 
-  state = {
-    ...INITIAL_STATE,
-  };
-
-  handleChange = ({ target: { name, value } }) => {
-    this.setState({
-      [name]: value,
-    });
-  };
-
-  handleSubmit = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    this.props.addUser(this.state);
-    this.setState({
-      ...INITIAL_STATE,
-    });
+    dispatch(addUser({ name, email }));
+    setName('')
+    setEmail('')
+    closeForm()
   };
 
-  render() {
-    const { name, email } = this.state;
-
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Name:
-          <input
-            type="text"
-            required
-            name="name"
-            value={name}
-            onChange={this.handleChange}
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            required
-            name="email"
-            value={email}
-            onChange={this.handleChange}
-          />
-        </label>
-        <button type="submit">Add user</button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input
+          type="text"
+          required
+          name="name"
+          value={name}
+          onChange={handleChange}
+        />
+      </label>
+      <label>
+        Email:
+        <input
+          type="email"
+          required
+          name="email"
+          value={email}
+          onChange={handleChange}
+        />
+      </label>
+      <button type="submit">Add user</button>
+    </form>
+  );
+};
