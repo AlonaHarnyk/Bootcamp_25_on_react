@@ -1,11 +1,28 @@
-import PropTypes from 'prop-types';
 import { Text, Span } from './User.styled';
 import Avatar from 'react-avatar';
-// import UpdateUserForm from 'components/UpdateUserForm/UpdateUserForm';
+import { useSelector } from 'react-redux';
+import { getUsers } from 'redux/users/usersSelectors';
+import { useState } from 'react';
+
+import { UpdateUserForm } from 'components/UpdateUserForm/UpdateUserForm';
 
 export const User = ({
-  user: { name, email, id, hasJob }, removeUser
+  user: { name, email, id}, removeUser
 }) => {
+
+  const [userToUpdate, setUserToUpdate] = useState(null)
+
+  const users = useSelector(getUsers)
+
+  const showUpdateForm = userId => {
+    const user = users.find(({ id }) => id === userId);
+    setUserToUpdate(user)
+  };
+
+  const closeForm = () => {
+    setUserToUpdate(null)
+  }
+
   const isRed = email.includes('biz');
   return (
     <>
@@ -23,13 +40,6 @@ export const User = ({
       >
         Delete
       </button>
-      {/* <button
-        onClick={() => {
-          changeStatus(id);
-        }}
-      >
-        Change job status
-      </button>
       <button
         onClick={() => {
           showUpdateForm(id);
@@ -38,8 +48,8 @@ export const User = ({
         Update user
       </button>
       {userToUpdate && userToUpdate.id === id && (
-        <UpdateUserForm userToUpdate={userToUpdate} updateUser={updateUser} />
-      )} */}
+        <UpdateUserForm userToUpdate={userToUpdate} closeForm={closeForm} />
+      )}
     </>
   );
 };

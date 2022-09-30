@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { addUser } from 'redux/users/usersOperations';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 export const AddUserForm = ({closeForm}) => {
   const [name, setName] = useState('');

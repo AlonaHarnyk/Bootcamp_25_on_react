@@ -1,18 +1,15 @@
 import { User } from '../User/User';
-import { getUsers } from '../../redux/users/usersSelectors.js'
+import { getUsers } from '../../redux/users/usersSelectors.js';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteUser } from 'redux/users/usersOperations';
 
 export const UsersList = () => {
-  const users = useSelector(getUsers)
-  const dispatch = useDispatch()
+  const users = useSelector(getUsers);
+  const dispatch = useDispatch();
 
-console.log(users)
-  
   const handleDelete = id => {
-dispatch(deleteUser(id))
-  }
-
+    dispatch(deleteUser(id));
+  };
 
   return (
     <ul>
@@ -24,7 +21,6 @@ dispatch(deleteUser(id))
     </ul>
   );
 };
-
 
 // export const UsersList = ({ users }) => {
 //   return (

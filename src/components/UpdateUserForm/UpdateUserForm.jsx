@@ -1,56 +1,55 @@
-import { Component } from 'react';
-import PropTypes from 'prop-types';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { updateUser } from 'redux/users/usersOperations';
 
+export const UpdateUserForm = ({ userToUpdate, closeForm }) => {
+  const [name, setName] = useState(userToUpdate.name);
+  const [email, setEmail] = useState(userToUpdate.email);
 
-export default class UpdateUserForm extends Component {
-  static propTypes = {
-      updateUser: PropTypes.func.isRequired,
-      userToUpdate: PropTypes.object.isRequired
+  const dispatch = useDispatch()
+
+  const handleChange = ({ target: { name, value } }) => {
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      default:
+        break;
+    }
   };
 
-  state = {
-      name: this.props.userToUpdate.name,
-      email: this.props.userToUpdate.email
+  const handleSubmit = event => {
+    event.preventDefault();
+    dispatch(updateUser({ ...userToUpdate, name, email }))
+    closeForm()
   };
 
-  handleChange = ({ target: { name, value } }) => {
-    this.setState({
-      [name]: value,
-    });
-  };
-
-  handleSubmit = event => {
-      event.preventDefault();
-      this.props.updateUser({...this.props.userToUpdate, ...this.state})
-  };
-
-  render() {
-    const { name, email } = this.state;
-
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Name:
-          <input
-            type="text"
-            required
-            name="name"
-            value={name}
-            onChange={this.handleChange}
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            required
-            name="email"
-            value={email}
-            onChange={this.handleChange}
-          />
-        </label>
-        <button type="submit">Save changes</button>
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input
+          type="text"
+          required
+          name="name"
+          value={name}
+          onChange={handleChange}
+        />
+      </label>
+      <label>
+        Email:
+        <input
+          type="email"
+          required
+          name="email"
+          value={email}
+          onChange={handleChange}
+        />
+      </label>
+      <button type="submit">Save changes</button>
+    </form>
+  );
+};

@@ -1,4 +1,4 @@
-import { fetchUsers, deleteUser, addUser } from './usersOperations';
+import { fetchUsers, deleteUser, addUser, updateUser } from './usersOperations';
 import { createSlice } from '@reduxjs/toolkit';
 
 const usersSlice = createSlice({
@@ -35,6 +35,18 @@ const usersSlice = createSlice({
       state.isLoading = false;
     },
     [addUser.rejected]: (state, { payload }) => {
+      state.isLoading = false;
+      state.error = payload;
+    },
+    [updateUser.pending]: state => {
+      state.isLoading = true;
+    },
+    [updateUser.fulfilled]: (state, { payload }) => {
+      const index = state.items.findIndex(user => user.id === payload.id);
+      state.items[index] = payload;
+      state.isLoading = false;
+    },
+    [updateUser.rejected]: (state, { payload }) => {
       state.isLoading = false;
       state.error = payload;
     },
