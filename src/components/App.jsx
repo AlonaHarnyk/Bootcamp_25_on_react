@@ -1,12 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from './Button/Button';
 import { Section } from './Section/Section';
 import { UsersList } from './UsersList/UsersList';
 import { AddUserForm } from './AddUserForm/AddUserForm';
+import { RegisterForm } from './RegisterForm/RegisterForm';
+import { LoginForm } from './LoginForm/LoginForm';
+import { UserAuthMenu } from './UserAuthMenu/UserAuthMenu';
 import { GlobalStyles } from 'utils/GlobalStyle';
 import { fetchUsers } from 'redux/users/usersOperations';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsLoading, getError, getUsers } from 'redux/users/usersSelectors';
+import { selectIsLoggedIn } from 'redux/auth/authSelectors';
+import { fetchCurrentUser } from 'redux/auth/authOperations';
+import { selectUserName } from 'redux/auth/authSelectors';
+
 
 export const App = () => {
   const [isListShown, setIsListShown] = useState(false);
@@ -15,6 +22,12 @@ export const App = () => {
   const isLoading = useSelector(getIsLoading);
   const error = useSelector(getError)
   const users = useSelector(getUsers)
+  const isLoggedIn = useSelector(selectIsLoggedIn)
+  const name = useSelector(selectUserName);
+
+  useEffect(() => {
+    dispatch(fetchCurrentUser())
+  }, [dispatch])
 
   const changeVisibility = () => {
     setIsListShown(true);
@@ -31,6 +44,7 @@ export const App = () => {
 
   return (
     <>
+      {isLoggedIn && name && <UserAuthMenu />}
       <Section title="Users list">
         {isListShown ? (
           <>
@@ -54,6 +68,8 @@ export const App = () => {
         {isFormShown && <AddUserForm closeForm={closeForm} />}
       </Section>
       {error && <p>{error}</p>}
+      <RegisterForm />
+      <LoginForm/>
       <GlobalStyles />
     </>
   );
