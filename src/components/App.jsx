@@ -1,76 +1,34 @@
-import { useState, useEffect } from 'react';
-import { Button } from './Button/Button';
-import { Section } from './Section/Section';
-import { UsersList } from './UsersList/UsersList';
-import { AddUserForm } from './AddUserForm/AddUserForm';
-import { RegisterForm } from './RegisterForm/RegisterForm';
-import { LoginForm } from './LoginForm/LoginForm';
-import { UserAuthMenu } from './UserAuthMenu/UserAuthMenu';
-import { GlobalStyles } from 'utils/GlobalStyle';
-import { fetchUsers } from 'redux/users/usersOperations';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getIsLoading, getError, getUsers } from 'redux/users/usersSelectors';
-import { selectIsLoggedIn } from 'redux/auth/authSelectors';
 import { fetchCurrentUser } from 'redux/auth/authOperations';
-import { selectUserName } from 'redux/auth/authSelectors';
-
+import { selectIsFetchingCurrent } from 'redux/auth/authSelectors';
+import { Routes, Route } from 'react-router-dom';
+import { Layout } from './Layout/Layout';
+import { HomePage } from 'pages/HomePage/HomePage';
+import { UsersPage } from 'pages/UsersPage/UsersPage';
+import { RegisterPage } from 'pages/RegisterPage/RegisterPage';
+import { LoginPage } from 'pages/LoginPage/LoginPage'; 
+import { PrivateRoute } from 'HOCs/PrivateRoute';
+import { PublicRoute } from 'HOCs/PublicRoute';
 
 export const App = () => {
-  const [isListShown, setIsListShown] = useState(false);
-  const [isFormShown, setIsFormShown] = useState(false);
   const dispatch = useDispatch();
-  const isLoading = useSelector(getIsLoading);
-  const error = useSelector(getError)
-  const users = useSelector(getUsers)
-  const isLoggedIn = useSelector(selectIsLoggedIn)
-  const name = useSelector(selectUserName);
+  const isFetchingCurrent = useSelector(selectIsFetchingCurrent);
 
   useEffect(() => {
     dispatch(fetchCurrentUser())
   }, [dispatch])
-
-  const changeVisibility = () => {
-    setIsListShown(true);
-    dispatch(fetchUsers());
-  };
-
-  const showForm = () => {
-    setIsFormShown(true);
-  };
-
-  const closeForm = () => {
-    setIsFormShown(false);
-  };
-
   return (
     <>
-      {isLoggedIn && name && <UserAuthMenu />}
-      <Section title="Users list">
-        {isListShown ? (
-          <>
-            {isLoading && users.length === 0 ? (
-              <h1>LOADING..</h1>
-            ) : (
-              <UsersList
-              />
-            )}
-            {!isFormShown && (
-              <Button type="button" text="Add user" clickHandler={showForm} />
-            )}
-          </>
-        ) : (
-          <Button
-            type="button"
-            text="Show list of users"
-            clickHandler={changeVisibility}
-          />
-        )}
-        {isFormShown && <AddUserForm closeForm={closeForm} />}
-      </Section>
-      {error && <p>{error}</p>}
-      <RegisterForm />
-      <LoginForm/>
-      <GlobalStyles />
+      {!isFetchingCurrent && <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route index element={<PublicRoute><HomePage /></PublicRoute>} />
+          <Route path='users' element={<PrivateRoute><UsersPage /></PrivateRoute>} />
+          <Route path='register' element={<PublicRoute restricted><RegisterPage /></PublicRoute>} />
+          <Route path='login' element={<PublicRoute restricted><LoginPage /></PublicRoute>} />
+        </Route>
+      </Routes>
+      }
     </>
   );
 };
